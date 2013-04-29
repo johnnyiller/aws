@@ -366,18 +366,21 @@ def create_raid_disks(mount_point, num_disks, disk_size,
   # Not invoked until the volumes have been successfully created and attached
   ruby_block "databagupdate" do
     block do
-      Chef::Log.info("finished creating disks")
+      begin 
+        Chef::Log.info("finished creating disks")
       
-      devices.each_pair do |key, value|
-        value = node[:aws][:ebs_volume][key][:volume_id]
-        devices[key] =  value
-        Chef::Log.info("value is #{value}")
+        devices.each_pair do |key, value|
+          value = node[:aws][:ebs_volume][key][:volume_id]
+          devices[key] =  value
+          Chef::Log.info("value is #{value}")
+        end
+      
+        # Assemble all the data bag meta data
+        node.set[:aws][:raid][mount_point][:raid_dev] = raid_dev
+        node.set[:aws][:raid][mount_point][:device_map] = devices      
+        node.save
+      rescue
       end
-      
-      # Assemble all the data bag meta data
-      node.set[:aws][:raid][mount_point][:raid_dev] = raid_dev
-      node.set[:aws][:raid][mount_point][:device_map] = devices      
-      node.save
     end
   end
 
