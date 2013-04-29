@@ -79,9 +79,9 @@ def update_node_from_md_device(md_device, mount_point)
   raid_devices = `#{command}`
   Chef::Log.info("already found the mounted device, created from #{raid_devices}")
   
-  node.set[:aws][:raid][mount_point][:raid_dev] = md_device.sub(/\/dev\//,"")
-  node.set[:aws][:raid][mount_point][:devices] = raid_devices
-  node.save
+  #node.set[:aws][:raid][mount_point][:raid_dev] = md_device.sub(/\/dev\//,"")
+  #node.set[:aws][:raid][mount_point][:devices] = raid_devices
+  #node.save
 end
 
 # Dumb way to look for mounted raid devices.  Assumes that the machine
